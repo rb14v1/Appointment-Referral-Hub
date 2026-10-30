@@ -1,4 +1,4 @@
-# Serves components: backend-api, web
+# Serves components: backend, frontend
 terraform {
   required_providers {
     azurerm = {
@@ -21,8 +21,8 @@ provider "azurerm" {
 
 
 resource "azurerm_postgresql_flexible_server" "postgresql" {
-  name                   = "psql-appointment-test-18"
-  resource_group_name    = "appointment-test-18"
+  name                   = "psql-appointment-test-20"
+  resource_group_name    = "appointment-test-20"
   location               = "uksouth"
   version                = "16"
   sku_name               = "B_Standard_B1ms"
@@ -43,6 +43,12 @@ resource "azurerm_postgresql_flexible_server" "postgresql" {
   }
 }
 
+resource "azurerm_postgresql_flexible_server_configuration" "azure_extensions" {
+  name      = "azure.extensions"
+  server_id = azurerm_postgresql_flexible_server.postgresql.id
+  value     = "BTREE_GIST"
+}
+
 resource "random_password" "postgresql_admin" {
   length  = 24
   special = true
@@ -54,15 +60,15 @@ data "azurerm_private_dns_zone" "postgresql_dns_zone" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "postgresql_dns_zone_link" {
-  name                  = "link-appointment-test-18"
+  name                  = "link-appointment-test-20"
   resource_group_name   = var.hub_resource_group
   private_dns_zone_name = data.azurerm_private_dns_zone.postgresql_dns_zone.name
   virtual_network_id    = var.vnet_id
 }
 
 resource "azurerm_private_endpoint" "postgresql_pe" {
-  name                = "pe-psql-appointment-test-18"
-  resource_group_name = "appointment-test-18"
+  name                = "pe-psql-appointment-test-20"
+  resource_group_name = "appointment-test-20"
   location            = "uksouth"
   subnet_id           = var.subnet_id
 
