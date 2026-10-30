@@ -15,6 +15,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY requirements/ requirements/
 ARG REQUIREMENTS_FILE=requirements/dev.txt
 RUN pip install --no-cache-dir -r ${REQUIREMENTS_FILE}
+RUN pip install --no-cache-dir gunicorn
 
 FROM python:3.12-slim
 
